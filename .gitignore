@@ -1,0 +1,8 @@
+
+db.sqlite3
+db.sqbpro
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.log
