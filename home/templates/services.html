@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if not include %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - Love Modelling Studio</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #d8b789;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: #ff6f91;
+            color: #fff;
+        }
+        .logo {
+            font-size: 36px;
+            font-family: 'Cursive', sans-serif;
+        }
+
+        nav {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+        }
+
+
+        
+
+        .services-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .service {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 15px;
+            width: 300px;
+            text-align: center;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .service img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+     
+
+        .service p {
+            padding: 0 15px 15px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .service:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #000000;
+            margin-top: 30px;
+        }
+
+        footer a {
+            margin: 0 10px;
+            color: #ff6f91;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- <header>
+    <div class="logo"><u> <b> CAPTURE LOVE:LOVE MODELLING STUDIO</b></u></div>
+    
+       <h2> <b>PRE-WEDDING</b></h2>
+        </div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Services</a>
+        <a href="#">Gallery</a>
+        <a href="#">Contact Us</a>
+    </nav>
+</header> -->
+
+<section class="services-container">
+    <div class="service">
+        <img src="https://www.shaadidukaan.com/vogue/wp-content/uploads/2020/03/resort-in-jodhpur.jpg" alt="Wedding Photoshoot">
+        <h3>Wedding Photoshoot</h3>
+        <p>Capture the beautiful moments of your special day with our professional wedding photography services.</p>
+    </div>
+    <div class="service">
+        <img src="https://www.weddingreels.in/wp-content/uploads/2022/01/pre-wedding3.jpg" alt="Pre-Wedding Photoshoot">
+        <h3>Pre-Wedding Photoshoot</h3>
+        <p>Relive your love story before the big day with our stunning pre-wedding photography packages.</p>
+    </div>
+    <div class="service">
+        <img src="https://i0.wp.com/babybumpsandmombuns.com/wp-content/uploads/2022/02/img_6959.jpg?resize=1024%2C683&ssl=1" alt="Birthday Photoshoot">
+        <h3>Birthday Photoshoot</h3>
+        <p>Make your birthday unforgettable with our personalized birthday photoshoot services.</p>
+    </div>
+    <div class="service">
+        <img src="https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2017/11/ultimate-guide-outdoor-nature-photography-20.jpg?resize=750%2C500&ssl=1" alt="Outdoor Photoshoot">
+        <h3>Outdoor Photoshoot</h3>
+        <p>Experience the beauty of nature with our professionally conducted outdoor photoshoots.</p>
+    </div>
+    <!-- <div class="service">
+        <img src="https://www.focuseventphotography.com/wp-content/uploads/2019/11/las-vegas-convention-photography.jpg" alt="Event Photoshoot">
+        <h3>Event Photoshoot</h3>
+        <p>From parties to corporate events, we capture every moment with precision and style.</p>
+    </div> -->
+
+    <div class="service">
+        <img src="https://www.maternityphotographerhyderabad.in/images/Portfolio01.jpg" alt="Maternity Photoshoot">
+
+        <h3>Maternity Photoshoot</h3>
+        <p>Celebrate your journey to motherhood with stunning portraits that cherish this special moment.</p>
+    </div>
+</section>
+
+<!-- <footer>
+    <p>Contact us: info@lovemodellingstudio.com | Follow us on
+        <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a>
+    </p>
+</footer> -->
+
+</body>
+</html>
+{% endblock %}
+{% block footer %}
+    {% if not include %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
