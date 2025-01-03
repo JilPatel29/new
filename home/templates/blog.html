@@ -1,17 +1,8 @@
 {% extends 'base.html' %}
 
-{% block header %}
-    {% if not include %}
-        {{ block.super }}
-    {% endif %}
-{% endblock %}
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture Love - Blog</title>
     <style>
         * {
@@ -129,37 +120,23 @@
     </style>
 </head>
 <body>
-
     <section class="blog-banner">
         <h2>Welcome to Our Blog</h2>
         <p>Insights, tips, and stories from behind the lens</p>
     </section>
 
     <section class="blog-posts">
+        {% for blog in blogs %}
         <div class="post">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST368j8vaV1uHWS-LGeH5mpcvIZ-Gp9FgaMA&s" alt="Blog Image 1">
-            <h3>The Art of Wedding Photography</h3>
-            <p>Explore the magic moments we capture in weddings...</p>
-            <a href="#" class="read-more">Read More</a>
-        </div>
+            <img src="{{ blog.image_url }}" alt="Blog Image">
+            <h3>{{ blog.title }}</h3>
+            <p>{{ blog.short_description }}</p>
+            
 
-        <div class="post">
-            <img src="https://www.atlhea.in/wp-content/uploads/2022/05/pose-for-pre-wedding-shoot.jpg" alt="Blog Image 2">
-            <h3>Creative Pre-Wedding Shoot Ideas</h3>
-            <p>Get inspired by unique themes for your pre-wedding photoshoot...</p>
-            <a href="#" class="read-more">Read More</a>
+            <a href="{% url 'blog_detail' blog_id=blog.id %}" class="read-more">Read More</a>
         </div>
-
-        <div class="post">
-            <img src="data:image/jpeg;base64,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">
-            <h3>Post-Processing Tips for Flawless Photos</h3>
-            <p>Learn professional editing tips to bring out the best in every shot...</p>
-            <a href="#" class="read-more">Read More</a>
-        </div>
+        {% endfor %}
     </section>
-
-  
-
 </body>
 </html>
 {% endblock %}
