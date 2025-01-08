@@ -30,6 +30,67 @@
             justify-content: center;
         }
 
+        .profile-section {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-size: 18px;
+            color: #181717;
+            font-weight: bold;
+        }
+
+        .edit-profile-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #ff6f91;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e65a7a;
+        }
+
         nav {
             text-align: center;
             margin-top: 20px;
@@ -67,26 +128,32 @@
 
         .footer-section h4 {
             color: #fff;
-            font-size: 24px; /* Larger heading size */
+            font-size: 24px;
+            /* Larger heading size */
             margin-bottom: 15px;
         }
 
         .footer-section a {
-            color: #fff; /* White text for links */
+            color: #fff;
+            /* White text for links */
             text-decoration: none;
-            font-size: 18px; /* Larger font size */
+            font-size: 18px;
+            /* Larger font size */
             transition: color 0.3s ease;
         }
 
         .footer-section a:hover {
-            color: #181717; /* Darker color on hover */
-        
+            color: #181717;
+            /* Darker color on hover */
+
             text-decoration: underline;
         }
 
-        footer p, footer a {
+        footer p,
+        footer a {
             margin: 5px 0;
         }
+
         .signup-button {
             position: absolute;
             top: 20px;
@@ -123,7 +190,17 @@
 </head>
 
 <body>
+    {% if user.is_authenticated %}
+    <div class="profile-section">
+        <a href="{% url 'edit_profile' %}">
+            <img src="{{ user.profile_pic|default:'/static/images/default-profile.png' }}" alt="Profile" class="profile-pic">
+        </a>
+        <span class="username">{{ user.username }}</span>
+    </div>
+    {% else %}
     <a href="{% url 'signup' %}" class="signup-button">Sign Up</a>
+    {% endif %}
+
     {% block header %}
     <header>
         <div class="logo">
@@ -154,7 +231,7 @@
                 <h4>Contact Us</h4>
                 <p>Email: <a href="mailto:info@lovestudio87.com"> lovestudio87@gmail.com</a></p>
                 <p>Phone: <a href="tel: 9998456649"> 9998456649</a></p>
-                <p>Address:  11,Tirupati Complex, Sardar Chowk,Ahmedabad,382450</p>
+                <p>Address: 11,Tirupati Complex, Sardar Chowk,Ahmedabad,382450</p>
             </div>
 
             <div class="footer-section">
@@ -173,7 +250,7 @@
         </div>
     </footer>
     {% endblock %}
-  
+
 </body>
 
 </html>

@@ -1,26 +1,45 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
-    # Override related_name to prevent clashes
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='customuser_set',  # Change the related_name to avoid clashes
-        blank=True
-    )
-    
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='customuser_permissions_set',  # Change the related_name to avoid clashes
-        blank=True
-    )
 
     def __str__(self):
         return self.username
+
+class Profile(models.Model):
+    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE)  # Use string reference
+    bio = models.TextField(max_length=500, blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg')
+    phone = models.CharField(max_length=15, blank=True)
+    default='default-profile.png',  # Default image for users without an uploaded image
+    address = models.CharField(max_length=255, blank=True)
+    
+    def __str__(self):
+        return f'{self.user.username} Profile'
+
+# Signal handlers
+@receiver(post_save, sender=CustomUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=CustomUser)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
@@ -45,15 +64,17 @@ class Payment(models.Model):
 
 
 class Blog(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    author = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)  # Link to CustomUser
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft')
+    # Keep existing fields...
+    
+    # Add these new fields
+    image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+    short_description = models.TextField(max_length=200, blank=True)
+    read_time = models.IntegerField(default=5)  # Estimated read time in minutes
+    category = models.CharField(max_length=50, default='General')
+    
+    def get_absolute_url(self):
+        return reverse('blog_detail', args=[str(self.id)])
 
-    def __str__(self):
-        return self.title
 
 
 class Gallery(models.Model):

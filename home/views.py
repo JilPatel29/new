@@ -6,45 +6,36 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import CustomUser
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        phone_number = request.POST['phone_number']
-
-        if password1 != password2:
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'signup.html')
-        
-        if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken.")
-            return render(request, 'signup.html')
-
-        if CustomUser.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered.")
-            return render(request, 'signup.html')
-
-        if CustomUser.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already registered.")
-            return render(request, 'signup.html')
-
-        user = CustomUser.objects.create_user(
-            username=username, 
-            email=email, 
-            password=password1, 
-            phone_number=phone_number
-        )
-        user.save()
-
-        login(request, user)
-        return redirect('home')
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Account created successfully! Please login.')
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
     
-    return render(request, 'signup.html')
+    return render(request, 'signup.html', {'form': form})
+
 
 def login_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('/admin/')
+        return redirect('home')
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -52,11 +43,114 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
+            if user.is_staff:
+                return redirect('/admin/')
             return redirect('home')
         else:
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'login.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Successfully logged out.')
+    return redirect('login')
+
+def is_staff(user):
+    return user.is_staff
+
+@user_passes_test(is_staff)
+def admin_view(request):
+    return redirect('/admin/')
+
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'profile.html', context)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST.get('username')
+        user.email = request.POST.get('email')
+        user.phone_number = request.POST.get('phone_number')
+        
+        if 'profile_pic' in request.FILES:
+            user.profile_pic = request.FILES['profile_pic']
+        
+        user.save()
+        return redirect('home')
+        
+    return render(request, 'edit_profile.html')
+
+# def signup_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         password1 = request.POST['password1']
+#         password2 = request.POST['password2']
+#         phone_number = request.POST['phone_number']
+
+#         if password1 != password2:
+#             messages.error(request, "Passwords do not match.")
+#             return render(request, 'signup.html')
+        
+#         if CustomUser.objects.filter(username=username).exists():
+#             messages.error(request, "Username already taken.")
+#             return render(request, 'signup.html')
+
+#         if CustomUser.objects.filter(email=email).exists():
+#             messages.error(request, "Email already registered.")
+#             return render(request, 'signup.html')
+
+#         if CustomUser.objects.filter(phone_number=phone_number).exists():
+#             messages.error(request, "Phone number already registered.")
+#             return render(request, 'signup.html')
+
+#         user = CustomUser.objects.create_user(
+#             username=username, 
+#             email=email, 
+#             password=password1, 
+#             phone_number=phone_number
+#         )
+#         user.save()
+
+#         login(request, user)
+#         return redirect('home')
+    
+#     return render(request, 'signup.html')
+
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             return redirect('home')
+#         else:
+#             messages.error(request, 'Invalid username or password.')
+
+#     return render(request, 'login.html')
 
 def index(request):
     people = [
