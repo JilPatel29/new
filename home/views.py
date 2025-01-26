@@ -1,7 +1,7 @@
 from pyexpat.errors import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import BlogPost
+from .models import BlogPost, ContactUs
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -175,8 +175,25 @@ def home(request):
 
 def gallery(request):
     return render(request, "gallery.html")
-
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        # Create and save the contact submission
+        contact = ContactUs(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message
+        )
+        contact.save()
+        
+        messages.success(request, 'Your message has been sent successfully!')
+        return redirect('contact')
+        
     return render(request, "contact.html")
 
 def booking(request):
